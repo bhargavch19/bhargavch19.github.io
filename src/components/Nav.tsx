@@ -1,13 +1,5 @@
 import { useEffect, useState } from 'react'
-
-const LINKS: Array<{ href: string; label: string }> = [
-  { href: '#about', label: 'About' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#snippets', label: 'Snippets' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#contact', label: 'Contact' },
-]
+import { profile } from '../data/profile'
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -21,29 +13,29 @@ export function Nav() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
         scrolled
-          ? 'border-b border-slate-800/60 bg-slate-950/80 backdrop-blur'
+          ? 'border-b border-[var(--color-border)] bg-[var(--color-bg)]/85 backdrop-blur'
           : 'border-b border-transparent'
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#top" className="mono text-sm font-semibold tracking-tight text-slate-100">
-          BC<span className="text-[color:var(--color-accent)]">.</span>
+        <a href="#top" className="mono text-sm font-semibold tracking-tight text-zinc-100">
+          <span className="accent-gradient">BC</span>
+          <span className="text-zinc-500">.</span>
         </a>
-        <div className="hidden items-center gap-6 md:flex">
-          {LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-slate-400 transition-colors hover:text-slate-100"
-            >
-              {link.label}
-            </a>
-          ))}
+        <div className="flex items-center gap-3">
           <a
-            href="resume.docx"
-            className="rounded-full border border-slate-700 px-4 py-1.5 text-sm text-slate-100 transition-all hover:border-[color:var(--color-accent)] hover:text-[color:var(--color-accent)]"
+            href={profile.github}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden text-sm text-zinc-400 transition-colors hover:text-zinc-100 sm:inline"
+          >
+            GitHub
+          </a>
+          <a
+            href={profile.resumeHref}
+            className="rounded-full border border-[var(--color-border)] px-4 py-1.5 text-sm text-zinc-100 transition-all hover:border-[var(--color-accent)] hover:text-accent"
           >
             Resume
           </a>

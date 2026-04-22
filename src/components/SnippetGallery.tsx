@@ -1,8 +1,10 @@
 import { useMemo, useState } from 'react'
-import { Section } from './Section'
+import { motion } from 'framer-motion'
+import { sectionItem } from './Section'
 import { SnippetCard } from './SnippetCard'
 import { snippets, type Snippet } from '../data/snippets.generated'
 import { profile } from '../data/profile'
+import { EASE } from '../lib/motion'
 
 const FILTERS: Array<{ key: 'all' | Snippet['language']; label: string }> = [
   { key: 'all', label: 'All' },
@@ -37,34 +39,9 @@ export function SnippetGallery() {
   }, [])
 
   return (
-    <Section
-      id="snippets"
-      eyebrow={`${snippets.length} snippets`}
-      title="The full UI-Code-Snippets gallery."
-      subtitle="Searchable, filterable, copy-pasteable. Extracted at build time from the repo's README."
-    >
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap gap-2">
-          {FILTERS.map((f) => {
-            const active = filter === f.key
-            const count =
-              f.key === 'all' ? snippets.length : countByLanguage.get(f.key) ?? 0
-            return (
-              <button
-                type="button"
-                key={f.key}
-                onClick={() => setFilter(f.key)}
-                className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
-                  active
-                    ? 'border-[color:var(--color-accent)] bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent)]'
-                    : 'border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
-                }`}
-              >
-                {f.label} <span className="ml-1 mono text-xs opacity-70">{count}</span>
-              </button>
-            )
-          })}
-        </div>
+    <div>
+      <motion.div variants={sectionItem} className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h3 className="mono text-[11px] uppercase tracking-[0.22em] text-accent">All snippets</h3>
         <div className="relative w-full sm:w-72">
           <input
             type="search"
@@ -72,13 +49,34 @@ export function SnippetGallery() {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search title, category, code…"
             aria-label="Search snippets"
-            className="w-full rounded-full border border-slate-800 bg-slate-900/60 px-4 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-[color:var(--color-accent)] focus:outline-none"
+            className="w-full rounded-full border border-[var(--color-border)] bg-[var(--color-card)] px-4 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--color-accent)] focus:outline-none"
           />
         </div>
-      </div>
+      </motion.div>
+
+      <motion.div variants={sectionItem} className="mb-6 flex flex-wrap gap-2">
+        {FILTERS.map((f) => {
+          const active = filter === f.key
+          const count = f.key === 'all' ? snippets.length : countByLanguage.get(f.key) ?? 0
+          return (
+            <button
+              type="button"
+              key={f.key}
+              onClick={() => setFilter(f.key)}
+              className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
+                active
+                  ? 'border-[var(--color-accent)] bg-[var(--color-accent-soft)] text-accent'
+                  : 'border-[var(--color-border)] text-zinc-400 hover:border-[var(--color-border-strong)] hover:text-zinc-200'
+              }`}
+            >
+              {f.label} <span className="ml-1 mono text-xs opacity-70">{count}</span>
+            </button>
+          )
+        })}
+      </motion.div>
 
       {filtered.length === 0 ? (
-        <p className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center text-slate-400">
+        <p className="rounded-xl border border-[var(--color-border)] bg-[var(--color-card)] p-8 text-center text-zinc-400">
           No snippets match that filter.{' '}
           <button
             type="button"
@@ -86,31 +84,42 @@ export function SnippetGallery() {
               setFilter('all')
               setQuery('')
             }}
-            className="text-[color:var(--color-accent)] underline"
+            className="text-accent underline"
           >
             Reset
           </button>
         </p>
       ) : (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        <motion.div
+          layout
+          className="grid gap-5 md:grid-cols-2 xl:grid-cols-3"
+        >
           {filtered.map((s) => (
-            <SnippetCard key={s.id} snippet={s} />
+            <motion.div
+              key={s.id}
+              layout
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.22, ease: EASE }}
+            >
+              <SnippetCard snippet={s} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
 
-      <p className="mt-10 text-sm text-slate-500">
+      <p className="mt-10 text-sm text-zinc-500">
         Source of truth:{' '}
         <a
           href={profile.snippetsRepo}
           target="_blank"
           rel="noreferrer"
-          className="text-slate-300 underline hover:text-[color:var(--color-accent)]"
+          className="text-zinc-300 underline hover:text-accent"
         >
           bhargavch19/UI-Code-Snippets
         </a>
         .
       </p>
-    </Section>
+    </div>
   )
 }
