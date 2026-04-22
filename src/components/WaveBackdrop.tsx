@@ -1,41 +1,113 @@
-/**
- * A subtle, CPU-cheap animated backdrop for the hero.
- * Two flowing SVG wave lines panning at different speeds give a parallax feel.
- * Respects prefers-reduced-motion via CSS (the animation duration collapses to ~0).
- */
-export function WaveBackdrop() {
-  return (
-    <svg
-      aria-hidden="true"
-      viewBox="0 0 1440 800"
-      preserveAspectRatio="none"
-      className="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-60"
-    >
-      <defs>
-        <linearGradient id="wave-grad-a" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%" stopColor="var(--color-accent)" stopOpacity="0" />
-          <stop offset="50%" stopColor="var(--color-accent)" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="var(--color-accent-2)" stopOpacity="0" />
-        </linearGradient>
-        <linearGradient id="wave-grad-b" x1="1" y1="0" x2="0" y2="0">
-          <stop offset="0%" stopColor="var(--color-accent-2)" stopOpacity="0" />
-          <stop offset="50%" stopColor="var(--color-accent-2)" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="var(--color-accent)" stopOpacity="0" />
-        </linearGradient>
-      </defs>
+import { useEffect, useRef } from 'react'
 
-      <g className="wave-layer wave-layer-slow">
-        <path
-          d="M-200 540 C 120 480 320 620 640 540 C 960 460 1160 600 1520 520 L 1520 820 L -200 820 Z"
-          fill="url(#wave-grad-a)"
-        />
-      </g>
-      <g className="wave-layer wave-layer-fast">
-        <path
-          d="M-200 620 C 200 560 420 680 720 600 C 1020 520 1220 660 1640 580 L 1640 820 L -200 820 Z"
-          fill="url(#wave-grad-b)"
-        />
-      </g>
-    </svg>
+/**
+ * Canvas-based flowing waves. Four stacked sine layers with different
+ * amplitudes, frequencies, phase velocities, and translucent gradient fills.
+ * Reads CSS vars `--color-accent` and `--color-accent-2` so it stays on
+ * palette when the theme shifts.
+ *
+ * Respects prefers-reduced-motion (renders one static frame, then stops).
+ */
+interface Layer {
+  amplitude: number
+  wavelength: number
+  speed: number
+  phase: number
+  yOffset: number
+  color: [string, string]
+  fillOpacity: number
+}
+
+export function WaveBackdrop() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const rootStyle = getComputedStyle(document.documentElement)
+    const accent = rootStyle.getPropertyValue('--color-accent').trim() || '#6b8cff'
+    const accent2 = rootStyle.getPropertyValue('--color-accent-2').trim() || '#7fd3f3'
+
+    const layers: Layer[] = [
+      { amplitude: 26, wavelength: 420, speed: 0.0016, phase: 0, yOffset: 0.78, color: [accent, accent2], fillOpacity: 0.08 },
+      { amplitude: 20, wavelength: 300, speed: -0.0022, phase: Math.PI / 3, yOffset: 0.86, color: [accent2, accent], fillOpacity: 0.09 },
+      { amplitude: 14, wavelength: 210, speed: 0.003, phase: Math.PI, yOffset: 0.92, color: [accent, accent2], fillOpacity: 0.1 },
+      { amplitude: 9, wavelength: 150, speed: -0.004, phase: Math.PI / 2, yOffset: 0.97, color: [accent2, accent], fillOpacity: 0.14 },
+    ]
+
+    let width = 0
+    let height = 0
+    let dpr = Math.min(window.devicePixelRatio || 1, 2)
+
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect()
+      dpr = Math.min(window.devicePixelRatio || 1, 2)
+      width = rect.width
+      height = rect.height
+      canvas.width = Math.floor(width * dpr)
+      canvas.height = Math.floor(height * dpr)
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    }
+
+    const drawLayer = (layer: Layer, time: number) => {
+      const baseY = height * layer.yOffset
+      ctx.beginPath()
+      ctx.moveTo(0, height)
+      for (let x = 0; x <= width; x += 2) {
+        const y =
+          baseY +
+          Math.sin(x / layer.wavelength + time * layer.speed + layer.phase) *
+            layer.amplitude
+        ctx.lineTo(x, y)
+      }
+      ctx.lineTo(width, height)
+      ctx.closePath()
+
+      const grad = ctx.createLinearGradient(0, 0, width, 0)
+      grad.addColorStop(0, `oklch(from ${layer.color[0]} l c h / ${layer.fillOpacity})`)
+      grad.addColorStop(0.5, `oklch(from ${layer.color[1]} l c h / ${layer.fillOpacity + 0.08})`)
+      grad.addColorStop(1, `oklch(from ${layer.color[0]} l c h / ${layer.fillOpacity})`)
+      ctx.fillStyle = grad
+      ctx.fill()
+    }
+
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    let raf = 0
+    let running = true
+
+    const frame = (now: number) => {
+      if (!running) return
+      ctx.clearRect(0, 0, width, height)
+      for (const layer of layers) drawLayer(layer, now)
+      if (!reduce) raf = requestAnimationFrame(frame)
+    }
+
+    resize()
+    raf = requestAnimationFrame(frame)
+
+    const onResize = () => {
+      resize()
+      // force a repaint on resize (rAF loop will handle the next frame anyway,
+      // but if reduced-motion we need to draw once)
+      if (reduce) frame(performance.now())
+    }
+    window.addEventListener('resize', onResize)
+
+    return () => {
+      running = false
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', onResize)
+    }
+  }, [])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 -z-10 h-full w-full"
+    />
   )
 }
