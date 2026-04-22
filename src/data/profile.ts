@@ -13,9 +13,8 @@ export const profile = {
   availability: 'Open to new opportunities',
   stats: [
     { label: 'Years shipping', value: 9, suffix: '+' },
-    { label: 'Employers', value: 5 },
-    { label: 'Code snippets', value: 105 },
-    { label: 'Base', value: 'Charlotte, NC' },
+    { label: 'Apps shipped', value: 15, suffix: '+' },
+    { label: 'UI snippets', value: 105 },
   ],
   bio: [
     "I'm a senior frontend developer with nine-plus years of experience designing and delivering scalable single-page applications. My day-to-day is Angular (versions 2 through 18) and React, backed by TypeScript, Node.js, and AWS. Most recently I spent three years at Capital One rebuilding call-center tooling and customer-facing flows at enterprise scale.",

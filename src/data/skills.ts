@@ -22,6 +22,20 @@ export const skillGroups: SkillGroup[] = [
     ],
   },
   {
+    label: 'Accessibility',
+    items: [
+      'ADA compliance',
+      'WCAG 2.1 AA',
+      'WCAG 2.2',
+      'Section 508',
+      'ARIA',
+      'Semantic HTML',
+      'Screen-reader testing',
+      'axe DevTools',
+      'Keyboard navigation',
+    ],
+  },
+  {
     label: 'Backend',
     items: ['Node.js', 'Express', 'Java', 'J2EE', 'REST APIs', 'Microservices'],
   },
@@ -38,7 +52,21 @@ export const skillGroups: SkillGroup[] = [
     items: ['Jasmine', 'Karma', 'Cypress', 'Jest', 'Mocha', 'JUnit', 'Protractor'],
   },
   {
-    label: 'A/B & Design',
-    items: ['Adobe Target', 'Optimizely', 'Figma', 'Zeplin', 'SonarQube', 'Datadog', 'Splunk'],
+    label: 'Content & Design',
+    items: [
+      'Figma',
+      'Zeplin',
+      'Adobe Experience Manager',
+      'Adobe Analytics',
+      'Responsive / mobile-first',
+    ],
+  },
+  {
+    label: 'Experimentation',
+    items: ['Adobe Target', 'Optimizely'],
+  },
+  {
+    label: 'Observability',
+    items: ['SonarQube', 'Datadog', 'Splunk', 'Whitesource'],
   },
 ]
