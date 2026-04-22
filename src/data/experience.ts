@@ -6,6 +6,7 @@ export interface Role {
   end: string
   highlights: string[]
   stack: string[]
+  apps?: string[]
 }
 
 export const roles: Role[] = [
@@ -14,15 +15,23 @@ export const roles: Role[] = [
     title: 'Senior Frontend Developer',
     location: 'Remote',
     start: 'Jun 2023',
-    end: 'Present',
+    end: 'Mar 2026',
     highlights: [
       'Built responsive SPAs with Angular 13–18, translating Figma designs into production-ready, pixel-accurate code.',
       'Managed complex state with NgRx across multi-step workflows and data-heavy dashboards.',
       'Shipped containerized deployments on AWS via Docker, Kubernetes, and Jenkins pipelines.',
       'Drove A/B tests with Adobe Target and Optimizely for customer-facing flows.',
-      'Apps: Call-Agent Dashboard, Call-Quality Dashboard, Card Lock/Unlock, Statement Reprints.',
+      'Wrote end-to-end tests with Cypress; static analysis via SonarQube; vulnerability scanning via Whitesource.',
     ],
     stack: ['Angular 13–18', 'TypeScript', 'NgRx', 'Node.js', 'SCSS', 'AWS', 'Docker', 'Kubernetes', 'Jenkins'],
+    apps: [
+      'Call-Agent Dashboard',
+      'Call-Quality Dashboard',
+      'Agent Call Data Ingest',
+      'Card Lock/Unlock',
+      'Statement Reprints',
+      'Memory Messages',
+    ],
   },
   {
     company: 'State of Maryland',
