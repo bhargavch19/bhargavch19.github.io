@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { profile } from '../data/profile'
 import { useCountUp } from '../hooks/useCountUp'
 import { EASE } from '../lib/motion'
+import { WaveBackdrop } from './WaveBackdrop'
+import { MouseSpotlight } from './MouseSpotlight'
 
 export function Hero() {
   const [photoFailed, setPhotoFailed] = useState(false)
@@ -13,6 +15,9 @@ export function Hero() {
       className="noise-overlay relative isolate overflow-hidden px-6 pt-28 pb-20 sm:pt-36 sm:pb-28"
     >
       <div className="absolute inset-0 -z-10 grid-backdrop" aria-hidden="true" />
+      <WaveBackdrop />
+      <MouseSpotlight />
+
       <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1fr_auto]">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -56,7 +61,7 @@ export function Hero() {
             </a>
           </div>
 
-          <dl className="mt-12 grid grid-cols-2 gap-6 sm:grid-cols-4">
+          <dl className="mt-12 grid grid-cols-3 gap-6">
             {profile.stats.map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -104,13 +109,12 @@ export function Hero() {
 }
 
 function StatValue({ stat }: { stat: (typeof profile.stats)[number] }) {
-  const isNumeric = typeof stat.value === 'number'
-  const animated = useCountUp(isNumeric ? (stat.value as number) : 0, 900, isNumeric)
-  if (!isNumeric) return <>{stat.value}</>
+  const animated = useCountUp(stat.value, 900, true)
+  const suffix = 'suffix' in stat && stat.suffix ? stat.suffix : ''
   return (
     <>
       {animated}
-      {'suffix' in stat && stat.suffix ? stat.suffix : ''}
+      {suffix}
     </>
   )
 }

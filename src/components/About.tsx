@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Section, sectionItem } from './Section'
 import { profile } from '../data/profile'
+import { HireMeter } from './HireMeter'
 
 export function About() {
   return (
@@ -23,6 +24,10 @@ export function About() {
           <p className="mt-2 text-zinc-100">{profile.availability}</p>
         </motion.aside>
       </div>
+
+      <motion.div variants={sectionItem} className="mt-10">
+        <HireMeter />
+      </motion.div>
     </Section>
   )
 }
