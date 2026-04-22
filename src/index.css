@@ -3,18 +3,29 @@
 @theme {
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Monaco, monospace;
-  --color-accent: oklch(0.68 0.19 264);
-  --color-accent-soft: oklch(0.68 0.19 264 / 0.12);
+
+  /* Base neutrals — warmer than plain slate */
+  --color-bg: #09090f;
+  --color-bg-raised: #0f0f16;
+  --color-card: #13131c;
+  --color-border: #27273a;
+  --color-border-strong: #34344a;
+
+  /* Accent (indigo) and secondary (cyan) — used together for gradients */
+  --color-accent: oklch(0.71 0.18 264);
+  --color-accent-soft: oklch(0.71 0.18 264 / 0.14);
+  --color-accent-2: oklch(0.82 0.13 210);
 }
 
 html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  background: var(--color-bg);
+  color-scheme: dark;
 }
 
 body {
   font-family: var(--font-sans);
   font-feature-settings: 'cv11', 'ss01';
+  background: var(--color-bg);
 }
 
 code,
@@ -23,7 +34,19 @@ pre,
   font-family: var(--font-mono);
 }
 
-/* Subtle grid backdrop for the hero */
+.text-accent { color: var(--color-accent); }
+.bg-accent-soft { background: var(--color-accent-soft); }
+.border-accent { border-color: var(--color-accent); }
+
+/* Utility: indigo → cyan gradient text for emphasis */
+.accent-gradient {
+  background: linear-gradient(110deg, var(--color-accent) 0%, var(--color-accent-2) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Grid backdrop for the hero */
 .grid-backdrop {
   background-image:
     linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
@@ -32,29 +55,46 @@ pre,
   mask-image: radial-gradient(ellipse at top, black 35%, transparent 75%);
 }
 
-.fade-up {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+/* Subtle SVG noise overlay — kills banding on solid dark backgrounds */
+.noise-overlay {
+  position: relative;
+  isolation: isolate;
+}
+.noise-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
 }
 
-.fade-up.in-view {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Custom scrollbar to match the theme (dark) */
+/* Dark custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: var(--color-bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: var(--color-border);
   border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: var(--color-border-strong);
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
