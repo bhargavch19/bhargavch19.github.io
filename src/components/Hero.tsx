@@ -1,120 +1,231 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import { profile } from '../data/profile'
-import { useCountUp } from '../hooks/useCountUp'
-import { EASE } from '../lib/motion'
-import { WaveBackdrop } from './WaveBackdrop'
-import { MouseSpotlight } from './MouseSpotlight'
 
 export function Hero() {
-  const [photoFailed, setPhotoFailed] = useState(false)
+  const orb1 = useRef<HTMLDivElement>(null)
+  const orb2 = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!window.matchMedia('(hover: hover)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let raf = 0
+    const onMove = (e: MouseEvent) => {
+      const x = e.clientX / window.innerWidth - 0.5
+      const y = e.clientY / window.innerHeight - 0.5
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        if (orb1.current) {
+          orb1.current.style.translate = `${x * 18}px ${y * 18}px`
+        }
+        if (orb2.current) {
+          orb2.current.style.translate = `${x * 36}px ${y * 36}px`
+        }
+      })
+    }
+    document.addEventListener('mousemove', onMove)
+    return () => {
+      document.removeEventListener('mousemove', onMove)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
 
   return (
     <section
       id="top"
-      className="noise-overlay relative isolate overflow-hidden px-6 pt-28 pb-20 sm:pt-36 sm:pb-28"
+      className="noise-overlay relative grid min-h-screen place-items-center overflow-hidden px-6 pt-28 pb-20"
+      style={{ isolation: 'isolate' }}
     >
-      <div className="absolute inset-0 -z-10 grid-backdrop" aria-hidden="true" />
-      <WaveBackdrop />
-      <MouseSpotlight />
+      <div aria-hidden="true" className="grid-backdrop pointer-events-none absolute inset-0 z-0" />
 
-      <div className="mx-auto grid max-w-6xl items-center gap-12 md:grid-cols-[1fr_auto]">
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: EASE }}
+      {/* centered radial glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute z-0"
+        style={{
+          width: 800,
+          height: 800,
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, oklch(0.71 0.18 264 / 0.22) 0%, transparent 60%)',
+          filter: 'blur(40px)',
+        }}
+      />
+
+      {/* two floating orbs with mouse parallax */}
+      <div
+        ref={orb1}
+        aria-hidden="true"
+        className="pointer-events-none absolute z-0"
+        style={{
+          left: -120,
+          top: '30%',
+          width: 340,
+          height: 340,
+          borderRadius: 9999,
+          background: 'oklch(0.71 0.18 264)',
+          filter: 'blur(80px)',
+          opacity: 0.35,
+          animation: 'orbFloat 14s ease-in-out infinite',
+          transition: 'translate 200ms var(--ease-out-soft)',
+        }}
+      />
+      <div
+        ref={orb2}
+        aria-hidden="true"
+        className="pointer-events-none absolute z-0"
+        style={{
+          right: -140,
+          top: '55%',
+          width: 420,
+          height: 420,
+          borderRadius: 9999,
+          background: 'oklch(0.82 0.13 210)',
+          filter: 'blur(80px)',
+          opacity: 0.35,
+          animation: 'orbFloat 14s ease-in-out -6s infinite',
+          transition: 'translate 200ms var(--ease-out-soft)',
+        }}
+      />
+
+      <div className="relative z-[2] mx-auto max-w-[1100px] text-center">
+        <p
+          className="mono uppercase text-accent"
+          style={{
+            fontSize: 12,
+            letterSpacing: '0.3em',
+            opacity: 0,
+            transform: 'translateY(10px)',
+            animation: 'fadeUp 900ms var(--ease-out-soft) 200ms forwards',
+          }}
         >
-          <p className="mono mb-4 text-[11px] uppercase tracking-[0.22em] text-accent">
-            Senior Frontend Developer · {profile.location}
-          </p>
-          <h1 className="text-4xl font-semibold tracking-tight text-zinc-100 sm:text-5xl lg:text-6xl">
-            Hi, I'm <span className="accent-gradient">{profile.name.split(' ')[0]}</span>.
-            <br />
-            I build <span className="text-zinc-300">scalable web apps</span>
-            <span className="text-zinc-500"> at enterprise scale.</span>
-          </h1>
-          <p className="mt-6 max-w-xl text-lg text-zinc-400">{profile.tagline}</p>
+          {profile.name} · {profile.title} · {profile.location}
+        </p>
 
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href={profile.resumeHref}
-              className="group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-2)] px-5 py-2.5 text-sm font-medium text-zinc-950 transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_-8px_var(--color-accent)]"
-            >
-              Download resume
-              <span aria-hidden="true" className="transition-transform group-hover:translate-y-0.5">
-                ↓
-              </span>
-            </a>
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:border-[var(--color-accent)] hover:text-accent"
-            >
-              Email me
-            </a>
-            <a
-              href={profile.github}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] px-5 py-2.5 text-sm font-medium text-zinc-100 transition-colors hover:border-[var(--color-accent)] hover:text-accent"
-            >
-              GitHub
-            </a>
-          </div>
-
-          <dl className="mt-12 grid grid-cols-3 gap-6">
-            {profile.stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.2 + i * 0.06, ease: EASE }}
-              >
-                <dt className="mono text-[11px] uppercase tracking-wider text-zinc-500">
-                  {stat.label}
-                </dt>
-                <dd className="mt-1 text-2xl font-semibold text-zinc-100">
-                  <StatValue stat={stat} />
-                </dd>
-              </motion.div>
-            ))}
-          </dl>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.1, ease: EASE }}
-          className="relative mx-auto h-48 w-48 sm:h-56 sm:w-56 md:ml-auto md:h-64 md:w-64"
+        <h1
+          className="font-semibold text-zinc-100"
+          style={{
+            marginTop: 28,
+            fontSize: 'clamp(52px, 9vw, 124px)',
+            lineHeight: 0.98,
+            letterSpacing: '-0.035em',
+          }}
         >
-          <div
-            className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-2)] opacity-25 blur-3xl"
-            aria-hidden="true"
-          />
-          {photoFailed ? (
-            <div className="flex h-full w-full items-center justify-center rounded-full border border-[var(--color-border)] bg-[var(--color-card)] text-5xl font-semibold text-zinc-100">
-              BC
-            </div>
-          ) : (
-            <img
-              src={profile.photoHref}
-              alt={profile.name}
-              className="h-full w-full rounded-full border border-[var(--color-border)] object-cover"
-              onError={() => setPhotoFailed(true)}
-            />
-          )}
-        </motion.div>
+          <HeroWord delay={350}>Full-stack</HeroWord>{' '}
+          <HeroWord delay={450} style={{ color: 'var(--color-fg-400, #a1a1aa)' }}>
+            JavaScript.
+          </HeroWord>
+          <br />
+          <HeroWord delay={550} className="accent-gradient">
+            Data
+          </HeroWord>{' '}
+          <HeroWord delay={650} className="accent-gradient">
+            in
+          </HeroWord>{' '}
+          <HeroWord delay={750} className="accent-gradient">
+            motion.
+          </HeroWord>
+        </h1>
+
+        <p
+          className="mx-auto text-zinc-400"
+          style={{
+            marginTop: 32,
+            maxWidth: 640,
+            fontSize: 'clamp(18px, 1.5vw, 22px)',
+            lineHeight: 1.45,
+            opacity: 0,
+            transform: 'translateY(10px)',
+            animation: 'fadeUp 900ms var(--ease-out-soft) 1000ms forwards',
+          }}
+        >
+          {profile.tagline}
+        </p>
+
+        <div
+          className="inline-flex flex-wrap justify-center gap-3"
+          style={{
+            marginTop: 48,
+            opacity: 0,
+            animation: 'fadeUp 900ms var(--ease-out-soft) 1150ms forwards',
+          }}
+        >
+          <a
+            href="#work"
+            className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-[#09090f] transition-all hover:-translate-y-0.5"
+            style={{
+              background: 'linear-gradient(110deg, var(--color-accent) 0%, var(--color-accent-2) 100%)',
+              boxShadow: '0 0 0 transparent',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 14px 32px -10px var(--color-accent)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 0 transparent'
+            }}
+          >
+            See the work <span aria-hidden="true">↓</span>
+          </a>
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] px-5 py-3 text-sm font-medium text-zinc-100 transition-colors hover:border-[var(--color-accent)] hover:text-accent"
+          >
+            Get in touch
+          </a>
+        </div>
+      </div>
+
+      <div
+        aria-hidden="true"
+        className="mono absolute left-1/2 flex -translate-x-1/2 flex-col items-center gap-2.5 uppercase text-zinc-600"
+        style={{
+          bottom: 28,
+          fontSize: 10,
+          letterSpacing: '0.3em',
+          opacity: 0,
+          animation: 'fadeUp 900ms var(--ease-out-soft) 1400ms forwards',
+        }}
+      >
+        Scroll
+        <span
+          aria-hidden="true"
+          style={{
+            width: 1,
+            height: 36,
+            background: 'linear-gradient(to bottom, var(--color-fg-600, #52525b), transparent)',
+            animation: 'scrollHint 2.4s ease-in-out infinite',
+          }}
+        />
       </div>
     </section>
   )
 }
 
-function StatValue({ stat }: { stat: (typeof profile.stats)[number] }) {
-  const animated = useCountUp(stat.value, 900, true)
-  const suffix = 'suffix' in stat && stat.suffix ? stat.suffix : ''
+function HeroWord({
+  children,
+  delay,
+  className = '',
+  style,
+}: {
+  children: React.ReactNode
+  delay: number
+  className?: string
+  style?: React.CSSProperties
+}) {
   return (
-    <>
-      {animated}
-      {suffix}
-    </>
+    <span
+      className={className}
+      style={{
+        display: 'inline-block',
+        opacity: 0,
+        transform: 'translateY(30px)',
+        animation: `wordUp 900ms var(--ease-out-soft) ${delay}ms forwards`,
+        ...style,
+      }}
+    >
+      {children}
+    </span>
   )
 }

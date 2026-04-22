@@ -1,7 +1,8 @@
 export const profile = {
   name: 'Bhargav Chellu',
-  title: 'Senior Frontend Developer',
-  tagline: 'Angular, React, TypeScript, AWS — nine years shipping at enterprise scale.',
+  title: 'Full Stack Engineer',
+  tagline:
+    'Ten-plus years shipping production systems for Capital One, United Airlines, and State of Maryland. Vue, React, Node.js, Python — Lambda, SQS, OpenSearch. Pipelines that move, UIs that respond.',
   location: 'Charlotte, NC',
   email: 'thisisbhargavc@gmail.com',
   phone: '+1 (510) 458-1091',
@@ -12,12 +13,13 @@ export const profile = {
   photoHref: 'profile.jpg',
   availability: 'Open to new opportunities',
   stats: [
-    { label: 'Years shipping', value: 9, suffix: '+' },
-    { label: 'Apps shipped', value: 15, suffix: '+' },
-    { label: 'UI snippets', value: 105 },
+    { label: 'Years full stack', value: 10, suffix: '+' },
+    { label: 'Apps in production', value: 15, suffix: '+' },
+    { label: 'AWS services in play', value: 6 },
+    { label: 'On-time delivery', value: 100, suffix: '%' },
   ],
   bio: [
-    "I'm a senior frontend developer with nine-plus years of experience designing and delivering scalable single-page applications. My day-to-day is Angular (versions 2 through 18) and React, backed by TypeScript, Node.js, and AWS. Most recently I spent three years at Capital One rebuilding call-center tooling and customer-facing flows at enterprise scale.",
+    "I'm a full-stack engineer with ten-plus years of experience designing and delivering scalable systems. My day-to-day spans Vue, React, Node.js, and Python on top of AWS — Lambda, SQS, SNS, OpenSearch, S3. Most recently I spent three years at Capital One rebuilding call-center tooling and data-ingestion pipelines at enterprise scale.",
     "Outside of work I ship side projects — a React-Native accountability app, a Next.js party-games platform, and an ongoing batch of UI experiments in this repo. I care about pixel-correct design translation, measurable performance, and code other engineers can read a year from now.",
   ],
 } as const
