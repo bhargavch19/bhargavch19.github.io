@@ -1,9 +1,9 @@
-# Bhargav Chellu — Portfolio & UI Code Snippets
+# Bhargav Chellu — Portfolio
 
 A personal portfolio site that doubles as a searchable gallery for the UI
 snippet library I've built up over nine years of frontend work.
 
-**Live site:** https://bhargavch19.github.io/UI-Code-Snippets/
+**Live site:** https://bhargavch19.github.io
 
 ## What's here
 
@@ -34,7 +34,7 @@ Pushes to `main` deploy automatically via GitHub Actions
 - Source: **GitHub Actions**
 
 After that, every push to `main` runs the build + deploy workflow and publishes
-to `https://bhargavch19.github.io/UI-Code-Snippets/`.
+to `https://bhargavch19.github.io`.
 
 ## Updating content
 
