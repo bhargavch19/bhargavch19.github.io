@@ -12,7 +12,7 @@ export function SnippetsView({ onNavigateHome }: Props) {
       <button
         type="button"
         onClick={onNavigateHome}
-        className="mono mb-8 inline-flex items-center gap-2 uppercase text-zinc-500 transition-colors hover:text-accent"
+        className="mono mb-8 inline-flex items-center gap-2 uppercase text-zinc-400 transition-colors hover:text-accent"
         style={{ fontSize: 11, letterSpacing: '0.22em' }}
       >
         <span aria-hidden="true">←</span> Back to portfolio

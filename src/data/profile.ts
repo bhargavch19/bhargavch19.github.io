@@ -2,7 +2,7 @@ export const profile = {
   name: 'Bhargav Chellu',
   title: 'Full Stack Engineer',
   tagline:
-    'Ten-plus years shipping production systems for Capital One, United Airlines, and State of Maryland. Vue, React, Node.js, Python — Lambda, SQS, OpenSearch. Pipelines that move, UIs that respond.',
+    'Ten-plus years shipping production systems for Capital One, United Airlines, and State of Maryland. Vue, React, Node.js, Python — Lambda, SQS, OpenSearch. Figma → production pixels, WCAG 2.1 AA and ADA-compliant by default.',
   location: 'Charlotte, NC',
   email: 'thisisbhargavc@gmail.com',
   phone: '+1 (510) 458-1091',

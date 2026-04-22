@@ -104,17 +104,22 @@ export function Pipeline() {
   }, [])
 
   return (
-    <section id="pipeline" className="relative overflow-hidden bg-[var(--color-bg)] px-6 pt-32 pb-40 sm:pt-[160px] sm:pb-[180px]">
+    <section
+      id="pipeline"
+      aria-labelledby="pipeline-heading"
+      className="relative overflow-hidden bg-[var(--color-bg)] px-6 pt-32 pb-40 sm:pt-[160px] sm:pb-[180px]"
+    >
       <div className="mx-auto max-w-[1280px]">
         <SectionReveal>
           <div className="max-w-[760px]" style={{ marginBottom: 72 }}>
             <span className="section-count">
               <span className="mono text-accent" style={{ fontWeight: 500 }}>03</span>
-              <span className="mono ml-2.5 uppercase text-zinc-500" style={{ fontSize: 10, letterSpacing: '0.22em' }}>
+              <span className="mono ml-2.5 uppercase text-zinc-400" style={{ fontSize: 10, letterSpacing: '0.22em' }}>
                 Data in motion
               </span>
             </span>
             <h2
+              id="pipeline-heading"
               className="font-semibold text-zinc-100"
               style={{
                 marginTop: 20,
@@ -124,7 +129,7 @@ export function Pipeline() {
               }}
             >
               From source to search,{' '}
-              <span className="text-zinc-500">in real time.</span>
+              <span className="text-zinc-400">in real time.</span>
             </h2>
             <p className="mt-6 max-w-[620px] text-zinc-400" style={{ fontSize: 19, lineHeight: 1.55 }}>
               A live sketch of the ingestion pipelines I built at Capital One. Data flows left to right — watch it.
@@ -170,7 +175,7 @@ export function Pipeline() {
 
         <SectionReveal>
           <div
-            className="mono mt-10 flex flex-wrap items-center gap-6 uppercase text-zinc-500"
+            className="mono mt-10 flex flex-wrap items-center gap-6 uppercase text-zinc-400"
             style={{ fontSize: 11, letterSpacing: '0.18em' }}
           >
             <span>
@@ -182,12 +187,16 @@ export function Pipeline() {
             <span>
               <Dot color="var(--color-accent-2)" /> Serve
             </span>
-            <span className="ml-auto text-zinc-600">observability · CloudWatch · Datadog · Splunk</span>
+            <span className="ml-auto text-zinc-400">observability · CloudWatch · Datadog · Splunk</span>
           </div>
         </SectionReveal>
 
         <SectionReveal>
-          <div className="mt-7 flex flex-wrap gap-12">
+          <div
+            className="mt-7 flex flex-wrap gap-12"
+            aria-live="off"
+            aria-label="Pipeline observability counters"
+          >
             <Counter label="Messages processed (live demo)" value={processed.toLocaleString()} />
             <Counter label="Pipeline uptime" value="99.97%" />
             <Counter label="Data loss incidents" value="0" />
@@ -201,6 +210,7 @@ export function Pipeline() {
 function PipelineNode({ node, idx, hot }: { node: Node; idx: number; hot: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
   const [metric, setMetric] = useState(0)
+  const suffix = node.metric.suffix ?? ''
 
   useEffect(() => {
     const el = ref.current
@@ -235,6 +245,7 @@ function PipelineNode({ node, idx, hot }: { node: Node; idx: number; hot: boolea
     <div
       ref={ref}
       data-idx={idx}
+      aria-label={`${node.kind}: ${node.name}. ${node.metric.label} ${node.metric.target.toLocaleString()}${suffix}.`}
       className="relative z-[2] flex min-h-[180px] flex-col justify-between rounded-[18px] border border-[var(--color-border)] p-5"
       style={{
         background: 'linear-gradient(180deg, var(--color-card) 0%, var(--color-bg-raised) 100%)',
@@ -258,7 +269,7 @@ function PipelineNode({ node, idx, hot }: { node: Node; idx: number; hot: boolea
         >
           {node.icon}
         </div>
-        <div className="mono uppercase text-zinc-500" style={{ fontSize: 10, letterSpacing: '0.2em' }}>
+        <div className="mono uppercase text-zinc-400" style={{ fontSize: 10, letterSpacing: '0.2em' }}>
           {node.kind}
         </div>
         <div className="text-zinc-100" style={{ fontSize: 18, fontWeight: 600, letterSpacing: '-0.01em' }}>
@@ -269,7 +280,8 @@ function PipelineNode({ node, idx, hot }: { node: Node; idx: number; hot: boolea
         </div>
       </div>
       <div
-        className="mono mt-3.5 flex justify-between gap-2 text-zinc-500"
+        aria-hidden="true"
+        className="mono mt-3.5 flex justify-between gap-2 text-zinc-400"
         style={{ fontSize: 11, letterSpacing: '0.1em' }}
       >
         <span>{node.metric.label}</span>
@@ -277,7 +289,7 @@ function PipelineNode({ node, idx, hot }: { node: Node; idx: number; hot: boolea
           <span className="text-zinc-100 tabular-nums" style={{ fontWeight: 500 }}>
             {metric.toLocaleString()}
           </span>
-          {node.metric.suffix && <span className="ml-1 text-zinc-600">{node.metric.suffix}</span>}
+          {node.metric.suffix && <span className="ml-1 text-zinc-400">{node.metric.suffix}</span>}
         </span>
       </div>
     </div>
@@ -303,7 +315,7 @@ function Counter({ label, value }: { label: string; value: string }) {
         {value}
       </div>
       <div
-        className="mono mt-1.5 uppercase text-zinc-500"
+        className="mono mt-1.5 uppercase text-zinc-400"
         style={{ fontSize: 10, letterSpacing: '0.22em' }}
       >
         {label}

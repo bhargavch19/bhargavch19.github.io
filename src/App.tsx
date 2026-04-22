@@ -4,8 +4,8 @@ import { Hero } from './components/Hero'
 import { StatsStrip } from './components/cinematic/StatsStrip'
 import { Pipeline } from './components/cinematic/Pipeline'
 import { Philosophy } from './components/cinematic/Philosophy'
-import { Work } from './components/cinematic/Work'
-import { Timeline } from './components/cinematic/Timeline'
+import { ProfessionalWork } from './components/cinematic/ProfessionalWork'
+import { SideProjects } from './components/cinematic/SideProjects'
 import { Contact } from './components/cinematic/Contact'
 import { SnippetsView } from './components/SnippetsView'
 
@@ -44,19 +44,22 @@ export default function App() {
 
   return (
     <>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <Nav onNavigateSnippets={onNavigateSnippets} onNavigateHome={onNavigateHome} />
-      <main className="noise-overlay min-h-screen">
+      <main id="main-content" className="noise-overlay min-h-screen">
         {view === 'landing' ? (
           <>
             <Hero />
             <StatsStrip />
             <Pipeline />
             <Philosophy />
-            <Work />
-            <Timeline />
+            <ProfessionalWork />
+            <SideProjects />
             <Contact />
             <footer
-              className="border-t border-[var(--color-border)] px-6 py-10 text-center text-zinc-600"
+              className="border-t border-[var(--color-border)] px-6 py-10 text-center text-zinc-400"
               style={{ fontSize: 13 }}
             >
               © {new Date().getFullYear()} Bhargav Chellu · Built with care, in the dark.

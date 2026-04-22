@@ -62,8 +62,9 @@ function Stat({ stat, active, gradient }: { stat: Stat; active: boolean; gradien
   const suffix = 'suffix' in stat && stat.suffix ? stat.suffix : ''
 
   return (
-    <div>
+    <div aria-label={`${stat.value}${suffix} — ${stat.label}`}>
       <div
+        aria-hidden="true"
         className={`font-semibold leading-none tabular-nums ${gradient ? 'accent-gradient' : 'text-zinc-100'}`}
         style={{
           fontSize: 'clamp(48px, 6vw, 88px)',
@@ -74,7 +75,8 @@ function Stat({ stat, active, gradient }: { stat: Stat; active: boolean; gradien
         {suffix}
       </div>
       <div
-        className="mono mt-4 uppercase text-zinc-500"
+        aria-hidden="true"
+        className="mono mt-4 uppercase text-zinc-400"
         style={{ fontSize: 11, letterSpacing: '0.22em' }}
       >
         {stat.label}

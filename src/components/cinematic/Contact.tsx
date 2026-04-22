@@ -71,7 +71,7 @@ export function Contact() {
 
         <SectionReveal>
           <div
-            className="mono mt-16 flex flex-wrap justify-center gap-8 uppercase text-zinc-500"
+            className="mono mt-16 flex flex-wrap justify-center gap-8 uppercase text-zinc-400"
             style={{ fontSize: 12, letterSpacing: '0.22em' }}
           >
             <a

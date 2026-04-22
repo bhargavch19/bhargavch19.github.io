@@ -20,7 +20,8 @@ const WORDS: Word[] = [
   {
     prefix: 'Ship',
     accent: ' accessible.',
-    caption: 'WCAG 2.1 AA baseline. axe DevTools, screen-reader passes, keyboard-first.',
+    caption:
+      'WCAG 2.1 AA and ADA-compliant by default. axe DevTools, screen-reader passes, keyboard-first.',
   },
   {
     prefix: 'Prove',
@@ -67,10 +68,28 @@ export function Philosophy() {
     <section
       id="philosophy"
       ref={sectionRef}
+      aria-labelledby="philosophy-heading"
       className="relative bg-[var(--color-bg)]"
       style={{ minHeight: '300vh' }}
     >
+      <h2 id="philosophy-heading" className="sr-only">
+        How I work — five principles
+      </h2>
+
+      {/* Full list for screen readers (always in DOM). The visual below is
+          scroll-driven and marked aria-hidden so SR users aren't confused by
+          duplicated content. */}
+      <ol className="sr-only">
+        {WORDS.map((w, i) => (
+          <li key={i}>
+            {i + 1}. {w.prefix}
+            {w.accent} — {w.caption}
+          </li>
+        ))}
+      </ol>
+
       <div
+        aria-hidden="true"
         className="sticky top-0 flex h-screen flex-col items-center justify-center overflow-hidden px-6 text-center"
       >
         <p

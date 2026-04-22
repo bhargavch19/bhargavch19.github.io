@@ -153,7 +153,7 @@ export function Hero() {
           }}
         >
           <a
-            href="#work"
+            href="#experience"
             className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium text-[#09090f] transition-all hover:-translate-y-0.5"
             style={{
               background: 'linear-gradient(110deg, var(--color-accent) 0%, var(--color-accent-2) 100%)',

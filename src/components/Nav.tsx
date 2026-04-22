@@ -7,10 +7,10 @@ interface Props {
 }
 
 const LINKS = [
-  { href: '#work', label: 'Work' },
   { href: '#pipeline', label: 'Pipeline' },
   { href: '#philosophy', label: 'Philosophy' },
   { href: '#experience', label: 'Experience' },
+  { href: '#projects', label: 'Projects' },
   { href: '#contact', label: 'Contact' },
 ] as const
 
@@ -32,7 +32,7 @@ export function Nav({ onNavigateSnippets, onNavigateHome }: Props) {
           : 'border-b border-transparent'
       }`}
     >
-      <nav className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3.5 sm:px-8">
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3.5 sm:px-8">
         <a
           href="#top"
           onClick={(e) => {
@@ -40,8 +40,10 @@ export function Nav({ onNavigateSnippets, onNavigateHome }: Props) {
             onNavigateHome()
           }}
           className="inline-flex items-baseline gap-2.5 text-[15px] font-semibold tracking-tight text-zinc-100"
+          aria-label={`${profile.name}, ${profile.title} — home`}
         >
           <span
+            aria-hidden="true"
             className="mono inline-grid h-7 w-7 place-items-center rounded-lg text-xs font-bold"
             style={{
               background: 'linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-2) 100%)',
@@ -53,14 +55,14 @@ export function Nav({ onNavigateSnippets, onNavigateHome }: Props) {
           </span>
           <span>{profile.name}</span>
           <span
-            className="mono hidden border-l border-[var(--color-border)] pl-2.5 text-[11px] font-normal uppercase text-zinc-500 sm:inline"
+            className="mono hidden border-l border-[var(--color-border)] pl-2.5 text-[11px] font-normal uppercase text-zinc-400 sm:inline"
             style={{ letterSpacing: '0.16em' }}
           >
             {profile.title}
           </span>
         </a>
 
-        <div className="flex items-center gap-5 text-[13px] sm:gap-7">
+        <nav aria-label="Primary" className="flex items-center gap-5 text-[13px] md:gap-7">
           {LINKS.map((link) => (
             <a
               key={link.href}
@@ -86,7 +88,33 @@ export function Nav({ onNavigateSnippets, onNavigateHome }: Props) {
           >
             Hire me
           </a>
-        </div>
+        </nav>
+      </div>
+
+      <nav
+        aria-label="Primary, compact"
+        className="mx-auto flex gap-5 overflow-x-auto border-t border-[var(--color-border)] px-6 pb-2.5 text-[13px] md:hidden"
+        style={{ scrollbarWidth: 'none' }}
+      >
+        {LINKS.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className="whitespace-nowrap text-zinc-400 transition-colors hover:text-zinc-100"
+          >
+            {link.label}
+          </a>
+        ))}
+        <a
+          href="#snippets"
+          onClick={(e) => {
+            e.preventDefault()
+            onNavigateSnippets()
+          }}
+          className="whitespace-nowrap text-zinc-400 transition-colors hover:text-zinc-100"
+        >
+          Snippets
+        </a>
       </nav>
     </header>
   )
